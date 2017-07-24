@@ -125,15 +125,21 @@ $maxsize_xml 	= 50000;
 # to be in the current working directory.
 my $conf_file = 'dmarcts-report-parser.conf';
 
+# locate conf file or die
 if ( -e $conf_file ) {
-	do $conf_file;
+#	$conf_file = "./$conf_file";
 } elsif( -e  (File::Basename::dirname($0) . "/$conf_file" ) ) {
-	do ( File::Basename::dirname($0) . "/$conf_file" );
+	$conf_file = ( File::Basename::dirname($0) . "/$conf_file" );
 } else {
 	show_usage();
 	die "Could not read config file '$conf_file' from current working directory or path (" . File::Basename::dirname($0) . ')'
 }
 
+# load conf file with error handling
+my $conf_return = do "./$conf_file";
+die "couldn't parse $conf_file: $@" if $@;
+die "couldn't do $conf_file: $!"    unless defined $conf_return;
+  
 # Get command line options.
 my %options = ();
 use constant { TS_IMAP => 0, TS_MESSAGE_FILE => 1, TS_XML_FILE => 2, TS_MBOX_FILE => 3 };
