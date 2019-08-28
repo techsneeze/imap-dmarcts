@@ -32,7 +32,16 @@ sudo dnf install perl-File-MimeInfo perl-Mail-IMAPClient perl-MIME-tools perl-XM
 yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum install perl-File-MimeInfo perl-Mail-IMAPClient perl-MIME-tools perl-XML-Simple perl-DBI \
  perl-Socket6 perl-PerlIO-gzip perl-DBD-MySQL unzip perl-Mail-Mbox-MessageParser
- ```
+```
+### on macOS (macOS 10.13):
+```
+brew install mysql shared-mime-info
+update-mime-database /usr/local/share/mime
+perl -MCPAN -e 'install Mail::IMAPClient'
+perl -MCPAN -e 'install Mail::Mbox::MessageParser'
+perl -MCPAN -e 'install File::MimeInfo'
+perl -MCPAN -e 'install DBD::mysql'
+```
 
 To get your copy of the dmarcts-report-parser, you can either clone the repository:
 ```
