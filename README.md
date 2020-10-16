@@ -18,21 +18,31 @@ To install dependencies...
 
 ### on Debian:
 ```
-apt-get install libmail-imapclient-perl libmime-tools-perl libxml-simple-perl \
+apt-get install libfile-mimeinfo-perl libmail-imapclient-perl libmime-tools-perl libxml-simple-perl \
 libclass-dbi-mysql-perl libio-socket-inet6-perl libio-socket-ip-perl libperlio-gzip-perl \
 libmail-mbox-messageparser-perl unzip
 ```
 ### on Fedora (Fedora 23):
 ```
-sudo dnf install perl-Mail-IMAPClient perl-MIME-tools perl-XML-Simple perl-DBI \
+sudo dnf install perl-File-MimeInfo perl-Mail-IMAPClient perl-MIME-tools perl-XML-Simple perl-DBI \
  perl-Socket6 perl-PerlIO-gzip perl-DBD-MySQL unzip
 ```
 ### on CentOS (CentOS 7):
 ```
 yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum install perl-Mail-IMAPClient perl-MIME-tools perl-XML-Simple perl-DBI \
+yum install perl-File-MimeInfo perl-Mail-IMAPClient perl-MIME-tools perl-XML-Simple perl-DBI \
  perl-Socket6 perl-PerlIO-gzip perl-DBD-MySQL unzip perl-Mail-Mbox-MessageParser
  ```
+ 
+ ### on macOS (macOS 10.13):
+```
+brew install mysql shared-mime-info
+update-mime-database /usr/local/share/mime
+perl -MCPAN -e 'install Mail::IMAPClient'
+perl -MCPAN -e 'install Mail::Mbox::MessageParser'
+perl -MCPAN -e 'install File::MimeInfo'
+perl -MCPAN -e 'install DBD::mysql'
+```
 
 To get your copy of the dmarcts-report-parser, you can either clone the repository:
 ```
@@ -41,36 +51,38 @@ git clone https://github.com/techsneeze/dmarcts-report-parser.git
 or download a zip file containg all files from [here](https://github.com/techsneeze/dmarcts-report-parser/archive/master.zip). Once the files have been downloaded, you will need to copy/rename `dmarcts-report-parser.conf.sample` to `dmarcts-report-parser.conf`. Next, edit the configuration options:
 
 ```
-####################################################################
-### configuration ##################################################
-####################################################################
+################################################################################
+### configuration ##############################################################
+################################################################################
 
-# If IMAP access is not used, config options starting with $imap
-# do not need to be set and are ignored.
+# If IMAP access is not used, config options starting with $imap do not need to
+# be set and are ignored.
 
 $debug = 0;
 $delete_reports = 0;
 
 $dbname = 'dmarc';
 $dbuser = 'dmarc';
-$dbpass = 'xxx';
-$dbhost = ''; # Set the hostname if we can't connect to the local socket.
+$dbpass = 'password';
+$dbhost = 'dbhost'; # Set the hostname if we can't connect to the local socket.
+$dbport = '3306';
 
-$imapserver       = 'mail.example.com:143';
-$imapuser         = 'dmarcreports';
-$imappass         = 'xxx';
-$imapssl          = '0';        # If set to 1, remember to change server port to 993 and to disable imaptls.
-$imaptls          = '1';        # Enabled as the default and best-practice.
-$tlsverify        = '1';        # Enable verify server cert as the default and best-practice.
-$imapignoreerror  = 0;          # set it to 1 if you see an "ERROR: message_string() 
+$imapserver       = 'imap.server';
+$imapuser         = 'username';
+$imappass         = 'password';
+$imapport         = '143';
+$imapssl          = '0';        # If set to 1, remember to change server port to 993 and disable imaptls.
+$imaptls          = '0';        # Enabled as the default and best-practice.
+$tlsverify        = '0';        # Enable verify server cert as the default and best-practice.
+$imapignoreerror  = '0';          # set it to 1 if you see an "ERROR: message_string() 
                                 # expected 119613 bytes but received 81873 you may 
                                 # need the IgnoreSizeErrors option" because of malfunction
                                 # imap server as MS Exchange 2007, ...
-$imapreadfolder = 'Inbox';
+$imapreadfolder   = 'dmarc';
 
-# If $imapmovefolder is set, processed IMAP messages
-# will be moved (overruled by the --delete option!)
-$imapmovefolder = 'Inbox.processed';
+# If $imapmovefolder is set, processed IMAP messages will be moved (overruled by
+# the --delete option!)
+$imapmovefolder = 'dmarc/processed';
 
 # maximum size of XML files to store in database, long files can cause transaction aborts
 $maxsize_xml = 50000;
@@ -104,6 +116,7 @@ One of the following source options must be provided:
 #        -m : Read reports from mbox file(s) provided in PATH.
 #        -e : Read reports from MIME email file(s) provided in PATH.
 #        -x : Read reports from xml file(s) provided in PATH.
+#        -z : Read reports from zip file(s) provided in PATH.
 ```
 
 The following options are always allowed:

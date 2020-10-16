@@ -10,24 +10,30 @@ $delete_reports = 0;
 
 $dbname = 'dmarc';
 $dbuser = 'dmarc';
-$dbpass = 'xxx';
-$dbhost = ''; # Set the hostname if we can't connect to the local socket.
+$dbpass = 'password';
+$dbhost = 'dbhost'; # Set the hostname if we can't connect to the local socket.
+$dbport = '3306';
 
-$imapserver       = 'mail.example.com:143';
-$imapuser         = 'dmarcreports';
-$imappass         = 'xxx';
+$imapserver       = 'imap.server';
+$imapuser         = 'username';
+$imappass         = 'password';
+$imapport         = '143';
 $imapssl          = '0';        # If set to 1, remember to change server port to 993 and disable imaptls.
 $imaptls          = '1';        # Enabled as the default and best-practice.
 $tlsverify        = '1';        # Enable verify server cert as the default and best-practice.
-$imapignoreerror  = 0;          # set it to 1 if you see an "ERROR: message_string() 
+$imapignoreerror  = '0';          # set it to 1 if you see an "ERROR: message_string() 
                                 # expected 119613 bytes but received 81873 you may 
                                 # need the IgnoreSizeErrors option" because of malfunction
                                 # imap server as MS Exchange 2007, ...
-$imapreadfolder   = 'Inbox';
+$imapreadfolder   = 'dmarc';
 
 # If $imapmovefolder is set, processed IMAP messages will be moved (overruled by
 # the --delete option!)
-$imapmovefolder = 'Inbox.processed';
+$imapmovefolder = 'dmarc/processed';
+
+# If $imapmovefoldererr is set, IMAP messages that fail will be moved. If unset, failed messages
+# will move to $imapmovefolder (if it is set). Overruled by the --delete option!
+$imapmovefoldererr = 'Inbox.notProcessed';
 
 # maximum size of XML files to store in database, long files can cause transaction aborts
 $maxsize_xml = 50000;
