@@ -33,7 +33,11 @@ yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.r
 yum install perl-File-MimeInfo perl-Mail-IMAPClient perl-MIME-tools perl-XML-Simple perl-DBI \
  perl-Socket6 perl-PerlIO-gzip perl-DBD-MySQL unzip perl-Mail-Mbox-MessageParser
  ```
- 
+### on FreeBSD (FreeBSD 11.4):
+```
+sudo pkg install p5-File-MimeInfo p5-Mail-IMAPClient p5-MIME-tools p5-XML-Simple p5-DBI p5-Socket6 p5-PerlIO-gzip p5-DBD-MySQL p5-Mail-Mbox-MessageParser unzip
+```
+
  ### on macOS (macOS 10.13):
 ```
 brew install mysql shared-mime-info
