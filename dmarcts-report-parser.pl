@@ -285,8 +285,13 @@ if ($reports_source == TS_IMAP) {
 		}
 	# The whole point of setting this socket arg is so that we don't get the nasty warning
 	} else {
-		print "using ssl without verify servercert.\n" if $debug;
-		$socketargs = [ SSL_verify_mode => SSL_VERIFY_NONE ];
+		if ( $tlsverify == 0 ) {
+			print "use tls without verify servercert.\n" if $debug;
+			$socketargs = [ SSL_verify_mode => SSL_VERIFY_NONE ];
+		} else {
+			print "use tls with verify servercert.\n" if $debug;
+			$socketargs = [ SSL_verify_mode => SSL_VERIFY_PEER ];
+		}
 	}
   
 	print "connection to $imapserver with Ssl => $imapssl, User => $imapuser, Ignoresizeerrors => $imapignoreerror\n" if $debug;
