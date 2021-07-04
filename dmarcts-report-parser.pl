@@ -1053,10 +1053,14 @@ sub storeXMLInDatabase {
 sub checkDatabase {
 	my $dbh = $_[0];
 
+	# display width is deprecated in MySQL 8+ and will not be shown in show create statements
+	my $mysql_main_version = $dbh->selectrow_array("SELECT SUBSTRING_INDEX(VERSION(), '.', 1);") || 5;
+	my $display_width = ( $mysql_main_version <= 5 ? "(10)" : "" );
+
 	my %tables = (
 		"report" => {
 			column_definitions 		=> [
-				"serial"		, "int(10) unsigned NOT NULL AUTO_INCREMENT",
+				"serial"		, "int${ display_width } unsigned NOT NULL AUTO_INCREMENT",
 				"mindate"		, "timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
 				"maxdate"		, "timestamp NULL",
 				"domain"		, "varchar(255) NOT NULL",
@@ -1076,11 +1080,11 @@ sub checkDatabase {
 			},
 		"rptrecord" =>{
 			column_definitions 		=> [
-				"id"			, "int(10) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY",
-				"serial"		, "int(10) unsigned NOT NULL",
-				"ip"			, "int(10) unsigned",
+				"id"			, "int${ display_width } unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY",
+				"serial"		, "int${ display_width } unsigned NOT NULL",
+				"ip"			, "int${ display_width } unsigned",
 				"ip6"			, "binary(16)",
-				"rcount"		, "int(10) unsigned NOT NULL",
+				"rcount"		, "int${ display_width } unsigned NOT NULL",
 				"disposition"		, "enum('" . join("','", ALLOWED_DISPOSITION) . "')",
 				"reason"		, "varchar(255)",
 				"dkimdomain"		, "varchar(255)",
